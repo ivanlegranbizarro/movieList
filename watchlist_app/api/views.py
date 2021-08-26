@@ -1,4 +1,3 @@
-from django.db import models
 from rest_framework import status
 from rest_framework.response import Response
 from watchlist_app.models import WatchList, StreamingPlatform, Reviews
@@ -7,6 +6,7 @@ from rest_framework.views import APIView
 # from rest_framework import mixins
 from rest_framework import generics
 from rest_framework import viewsets
+from rest_framework.exceptions import ValidationError
 
 
 # from rest_framework.decorators import api_view
@@ -26,6 +26,13 @@ class ReviewCreate(generics.CreateAPIView):
     def perform_create(self, serializer):
         pk = self.kwargs.get('pk')
         movie = WatchList.objects.get(pk=pk)
+
+        # Validar si el usuario ya hizo una review de la película
+        user = self.request.user
+        review_queryset = Reviews.objects.filter(watchlist=movie, review_user=user)
+        if review_queryset.exists():
+            raise ValidationError('You already reviewed this movie')
+
         serializer.save(watchlist=movie)
 
 
@@ -134,7 +141,6 @@ class WatchDetailAV(APIView):
         movie = WatchList.objects.get(pk=pk)
         movie.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 # @api_view(['GET', 'POST'])
 # def movie_list(request):
