@@ -6,14 +6,27 @@ from watchlist_app.api.serializers import WatchListSerializer, StreamingPlatform
 from rest_framework.views import APIView
 # from rest_framework import mixins
 from rest_framework import generics
+from rest_framework import viewsets
 
 
 # from rest_framework.decorators import api_view
 
 
-class ReviewList(generics.ListCreateAPIView):
-    queryset = Reviews.objects.all()
+class ReviewList(generics.ListAPIView):
     serializer_class = ReviewSerializer
+
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        return Reviews.objects.filter(watchlist=pk)
+
+
+class ReviewCreate(generics.CreateAPIView):
+    serializer_class = ReviewSerializer
+
+    def perform_create(self, serializer):
+        pk = self.kwargs.get('pk')
+        movie = WatchList.objects.get(pk=pk)
+        serializer.save(watchlist=movie)
 
 
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -38,6 +51,11 @@ class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
 
 #     def get(self, request, *args, **kwargs):
 #         return self.retrieve(request, *args, **kwargs)
+
+
+class StreamPlatformViewSet(viewsets.ModelViewSet):
+    queryset = StreamingPlatform.objects.all()
+    serializer_class = StreamingPlatformSerializer
 
 
 class StreamingPlatformAV(APIView):
