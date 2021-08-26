@@ -46,6 +46,7 @@ class MovieDetailAV(APIView):
         movie.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 # @api_view(['GET', 'POST'])
 # def movie_list(request):
 #     if request.method == 'GET':
@@ -83,5 +84,4 @@ class MovieDetailAV(APIView):
 #     if request.method == 'DELETE':
 #         movie = Movie.objects.get(pk=pk)
 #         movie.delete()
-#         return Response(status=status.HTTP_204_NO_CONTENT)
-#
+#         return Response(status=status.HTTP_204_NO_CONTENdelete
