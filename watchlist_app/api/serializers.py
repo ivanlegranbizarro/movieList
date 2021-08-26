@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from watchlist_app.models import WatchList, StreamingPlatform
+from watchlist_app.models import WatchList, StreamingPlatform 
 
 
 class StreamingPlatformSerializer(serializers.ModelSerializer):
