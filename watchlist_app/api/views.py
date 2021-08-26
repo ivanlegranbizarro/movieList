@@ -1,11 +1,32 @@
+from django.db import models
 from rest_framework import status
 from rest_framework.response import Response
-from watchlist_app.models import WatchList, StreamingPlatform
-from watchlist_app.api.serializers import WatchListSerializer, StreamingPlatformSerializer
+from watchlist_app.models import WatchList, StreamingPlatform, Reviews
+from watchlist_app.api.serializers import WatchListSerializer, StreamingPlatformSerializer, ReviewSerializer
 from rest_framework.views import APIView
+from rest_framework import mixins, generics
 
 
 # from rest_framework.decorators import api_view
+
+
+class ReviewList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = Reviews.objects.all()
+    serializer_class = ReviewSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class ReviewDetail(mixins.RetrieveModelMixin, generics.GenericAPIView):
+    queryset = Reviews.objects.all()
+    serializer_class = ReviewSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
 
 class StreamingPlatformAV(APIView):
@@ -84,6 +105,7 @@ class WatchDetailAV(APIView):
         movie = WatchList.objects.get(pk=pk)
         movie.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 # @api_view(['GET', 'POST'])
 # def movie_list(request):
