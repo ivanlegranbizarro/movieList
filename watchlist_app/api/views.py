@@ -1,14 +1,16 @@
+from watchlist_app.api.permissions import AdminOrReadOnly, ReviewUserOrReadOnly
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import ValidationError
+from rest_framework import viewsets
+from rest_framework import generics
+from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
 from watchlist_app.models import WatchList, StreamingPlatform, Reviews
-from watchlist_app.api.serializers import WatchListSerializer, StreamingPlatformSerializer, ReviewSerializer
-from rest_framework.views import APIView
+from watchlist_app.api.serializers import (WatchListSerializer,
+                                           StreamingPlatformSerializer,
+                                           ReviewSerializer)
 # from rest_framework import mixins
-from rest_framework import generics
-from rest_framework import viewsets
-from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated
-from watchlist_app.api.permissions import AdminOrReadOnly, ReviewUserOrReadOnly
 
 
 # from rest_framework.decorators import api_view
@@ -102,7 +104,8 @@ class StreamingPlatformDetailAV(APIView):
         try:
             platform = StreamingPlatform.objects.get(pk=pk)
         except StreamingPlatform.DoesNotExist:
-            return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Not found'},
+                            status=status.HTTP_404_NOT_FOUND)
         serializer = StreamingPlatformSerializer(platform)
         return Response(serializer.data)
 
