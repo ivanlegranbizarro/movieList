@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
+from watchlist_app.api.permissions import AdminOrReadOnly, ReviewUserOrReadOnly
 
 
 # from rest_framework.decorators import api_view
@@ -14,6 +16,7 @@ from rest_framework.exceptions import ValidationError
 
 class ReviewList(generics.ListAPIView):
     serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         pk = self.kwargs['pk']
@@ -32,7 +35,8 @@ class ReviewCreate(generics.CreateAPIView):
 
         # Validar si el usuario ya hizo una review de la película
         user = self.request.user
-        review_queryset = Reviews.objects.filter(watchlist=movie, review_user=user)
+        review_queryset = Reviews.objects.filter(
+            watchlist=movie, review_user=user)
         if review_queryset.exists():
             raise ValidationError('You already reviewed this movie')
 
@@ -42,6 +46,7 @@ class ReviewCreate(generics.CreateAPIView):
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Reviews.objects.all()
     serializer_class = ReviewSerializer
+    permission_classes = [ReviewUserOrReadOnly]
 
 
 # class ReviewList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
