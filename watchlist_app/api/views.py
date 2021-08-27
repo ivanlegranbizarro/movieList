@@ -31,16 +31,25 @@ class ReviewCreate(generics.CreateAPIView):
 
     def perform_create(self, serializer):
         pk = self.kwargs.get('pk')
-        movie = WatchList.objects.get(pk=pk)
+        watchlist = WatchList.objects.get(pk=pk)
 
         # Validar si el usuario ya hizo una review de la película
-        user = self.request.user
+        review_user = self.request.user
         review_queryset = Reviews.objects.filter(
-            watchlist=movie, review_user=user)
+            watchlist=watchlist, review_user=review_user)
         if review_queryset.exists():
             raise ValidationError('You already reviewed this movie')
 
-        serializer.save(watchlist=movie, review_user=user)
+        if watchlist.number_rating == 0:
+            watchlist.avg_rating = serializer.validated_data['rating']
+        else:
+            watchlist.avg_rating = (
+                watchlist.avg_rating + serializer.validated_data['rating'])/2
+
+        watchlist.number_rating += 1
+        watchlist.save()
+
+        serializer.save(watchlist=watchlist, review_user=review_user)
 
 
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
