@@ -140,6 +140,8 @@ class WatchListAV(APIView):
 
 
 class WatchDetailAV(APIView):
+    permission_classes = [AdminOrReadOnly]
+
     def get(self, request, pk):
         try:
             movie = WatchList.objects.get(pk=pk)

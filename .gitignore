@@ -1,6 +1,3 @@
-#Ignora las variables del IDE de Jetbrains
-.idea
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
