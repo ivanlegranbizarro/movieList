@@ -42,3 +42,4 @@ def registration_view(request):
             data = serializer.errors
 
         return Response(data)
+
