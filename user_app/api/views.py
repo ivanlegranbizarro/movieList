@@ -13,7 +13,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 def logout_view(request):
     if request.method == 'POST':
         request.user.auth_token.delete()
-        return Response(status=status.status.HTTP_200_OK)
+        return Response(status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
