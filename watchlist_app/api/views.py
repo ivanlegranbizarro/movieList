@@ -14,6 +14,10 @@ from watchlist_app.api.serializers import (WatchListSerializer,
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle, ScopedRateThrottle
 from watchlist_app.api.throttling import ReviewCreateThrottle, ReviewListThrottle
 
+# Django Filters
+
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 # from rest_framework import mixins
 
@@ -36,6 +40,8 @@ class UserReview(generics.ListAPIView):
 class ReviewList(generics.ListAPIView):
     serializer_class = ReviewSerializer
     throttle_classes = [ReviewListThrottle]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['review_user__username', 'active']
 
     def get_queryset(self):
         pk = self.kwargs['pk']
@@ -64,9 +70,8 @@ class ReviewCreate(generics.CreateAPIView):
         if watchlist.avg_rating == 0:
             watchlist.avg_rating = serializer.validated_data['rating']
         else:
-            watchlist.avg_rating = (
-                                           watchlist.avg_rating + serializer.validated_data[
-                                       'rating']) / watchlist.number_rating
+            watchlist.avg_rating = (watchlist.avg_rating + serializer.validated_data[
+                'rating']) / watchlist.number_rating
 
         watchlist.number_rating += 1
         watchlist.save()
@@ -172,6 +177,13 @@ class WatchListAV(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors)
+
+
+class WatchList_filtered(generics.ListAPIView):
+    movies = WatchList.objects.all()
+    serializer_class = WatchListSerializer(movies, many=True)
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['title', 'platform__name']
 
 
 class WatchDetailAV(APIView):
