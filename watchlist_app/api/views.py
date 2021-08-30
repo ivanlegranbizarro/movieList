@@ -10,6 +10,10 @@ from watchlist_app.models import WatchList, StreamingPlatform, Reviews
 from watchlist_app.api.serializers import (WatchListSerializer,
                                            StreamingPlatformSerializer,
                                            ReviewSerializer)
+# Importaciones para el throttling
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle, ScopedRateThrottle
+from watchlist_app.api.throttling import ReviewCreateThrottle, ReviewListThrottle
+
 
 # from rest_framework import mixins
 
@@ -19,6 +23,7 @@ from watchlist_app.api.serializers import (WatchListSerializer,
 
 class ReviewList(generics.ListAPIView):
     serializer_class = ReviewSerializer
+    throttle_classes = [ReviewListThrottle]
 
     def get_queryset(self):
         pk = self.kwargs['pk']
@@ -28,6 +33,7 @@ class ReviewList(generics.ListAPIView):
 class ReviewCreate(generics.CreateAPIView):
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
+    throttle_classes = [ReviewCreateThrottle]
 
     def get_queryset(self):
         return Reviews.objects.all()
@@ -59,6 +65,13 @@ class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Reviews.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [ReviewUserOrReadOnly]
+
+    # Usar el throttle por defecto
+    # throttle_classes = [UserRateThrottle, AnonRateThrottle]
+    # Usar throttle customizado dentro de la propia clase
+
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'review-detail'
 
 
 # class ReviewList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):

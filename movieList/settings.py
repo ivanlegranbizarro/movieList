@@ -120,12 +120,16 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication'
         # 'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-    'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle',
-        'rest_framework.throttling.UserRateThrottle',
-    ],
+    # Si vamos a hacer Throttling local comentamos este, que tiene scopeo global
+    # 'DEFAULT_THROTTLE_CLASSES': [
+    #     'rest_framework.throttling.AnonRateThrottle',
+    #     'rest_framework.throttling.UserRateThrottle',
+    # ],
     'DEFAULT_THROTTLE_RATES': {
         'anon': '100/day',
-        'user': '1000/day'
+        'user': '1000/day',
+        'review-create': '1/day',
+        'review-list': '10/day',
+        'review-detail': '2/day'
     }
 }
