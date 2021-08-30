@@ -24,8 +24,12 @@ from watchlist_app.api.throttling import ReviewCreateThrottle, ReviewListThrottl
 class UserReview(generics.ListAPIView):
     serializer_class = ReviewSerializer
 
+    # def get_queryset(self):
+    # username = self.kwargs['username']
+    # return Reviews.objects.filter(review_user__username=username)
+
     def get_queryset(self):
-        username = self.kwargs['username']
+        username = self.request.query_params.get('username', None)
         return Reviews.objects.filter(review_user__username=username)
 
 
