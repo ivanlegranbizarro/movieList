@@ -10,6 +10,7 @@ from watchlist_app.models import WatchList, StreamingPlatform, Reviews
 from watchlist_app.api.serializers import (WatchListSerializer,
                                            StreamingPlatformSerializer,
                                            ReviewSerializer)
+
 # from rest_framework import mixins
 
 
