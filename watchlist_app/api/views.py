@@ -21,6 +21,14 @@ from watchlist_app.api.throttling import ReviewCreateThrottle, ReviewListThrottl
 # from rest_framework.decorators import api_view
 
 
+class UserReview(generics.ListAPIView):
+    serializer_class = ReviewSerializer
+
+    def get_queryset(self):
+        username = self.kwargs['username']
+        return Reviews.objects.filter(review_user__username=username)
+
+
 class ReviewList(generics.ListAPIView):
     serializer_class = ReviewSerializer
     throttle_classes = [ReviewListThrottle]
@@ -53,7 +61,8 @@ class ReviewCreate(generics.CreateAPIView):
             watchlist.avg_rating = serializer.validated_data['rating']
         else:
             watchlist.avg_rating = (
-                watchlist.avg_rating + serializer.validated_data['rating'])/watchlist.number_rating
+                                           watchlist.avg_rating + serializer.validated_data[
+                                       'rating']) / watchlist.number_rating
 
         watchlist.number_rating += 1
         watchlist.save()
@@ -185,7 +194,6 @@ class WatchDetailAV(APIView):
         movie = WatchList.objects.get(pk=pk)
         movie.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 # @api_view(['GET', 'POST'])
 # def movie_list(request):
