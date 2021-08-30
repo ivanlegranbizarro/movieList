@@ -44,8 +44,14 @@ class ReviewList(generics.ListAPIView):
     # Para hacer Match completo
     # filter_backends = [DjangoFilterBackend]
     # filterset_fields = ['review_user__username', 'active']
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['title', 'platform']
+
+    # Filtrar búsquedas por los parámetros deseados
+    # filter_backends = [filters.SearchFilter]
+    # search_fields = ['title', 'platform']
+
+    # Filtar búsquedas y ordenarlas por los parámetros deseados
+    filter_backends = [filters.OrderingFilter]
+    search_fields = ['avg_rating']
 
     def get_queryset(self):
         pk = self.kwargs['pk']
