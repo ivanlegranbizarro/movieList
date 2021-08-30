@@ -18,6 +18,9 @@ from watchlist_app.api.throttling import ReviewCreateThrottle, ReviewListThrottl
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 
+# Django Pagination
+from watchlist_app.api.pagination import WatchListPagination
+
 
 # from rest_framework import mixins
 
@@ -194,6 +197,7 @@ class WatchList_filtered(generics.ListAPIView):
     serializer_class = WatchListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['title', 'platform__name']
+    pagination_class = WatchListPagination
 
 
 class WatchDetailAV(APIView):

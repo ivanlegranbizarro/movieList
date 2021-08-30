@@ -12,6 +12,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class WatchListSerializer(serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True, read_only=True)
+    platform = serializers.CharField(source='platform.name')
     len_title = serializers.SerializerMethodField()
 
     class Meta:
@@ -53,3 +54,4 @@ class StreamingPlatformSerializer(serializers.ModelSerializer):
     #     instance.active = validated_data.get('active', instance.active)
     #     instance.save()
     #     return instance
+
