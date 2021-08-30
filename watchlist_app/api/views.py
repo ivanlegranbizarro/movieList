@@ -15,8 +15,8 @@ from rest_framework.throttling import UserRateThrottle, AnonRateThrottle, Scoped
 from watchlist_app.api.throttling import ReviewCreateThrottle, ReviewListThrottle
 
 # Django Filters
-
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 
 # from rest_framework import mixins
@@ -40,8 +40,12 @@ class UserReview(generics.ListAPIView):
 class ReviewList(generics.ListAPIView):
     serializer_class = ReviewSerializer
     throttle_classes = [ReviewListThrottle]
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['review_user__username', 'active']
+
+    # Para hacer Match completo
+    # filter_backends = [DjangoFilterBackend]
+    # filterset_fields = ['review_user__username', 'active']
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'platform']
 
     def get_queryset(self):
         pk = self.kwargs['pk']
@@ -180,8 +184,8 @@ class WatchListAV(APIView):
 
 
 class WatchList_filtered(generics.ListAPIView):
-    movies = WatchList.objects.all()
-    serializer_class = WatchListSerializer(movies, many=True)
+    queryset = WatchList.objects.all()
+    serializer_class = WatchListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['title', 'platform__name']
 
